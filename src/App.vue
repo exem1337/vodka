@@ -1,26 +1,78 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Welcome to Your Vue.js App" />
+<div class="vodka">
+  <header>
+    <div class="logo">
+      <span class="blue">Синее/</span>
+      <span class="light-blue">Синее</span>
+    </div>
+  </header>
+
+  <control-panel />
+
+  <selling-logs />
+</div>
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld.vue";
+import { onMounted, ref } from '@vue/runtime-core';
 
+import ControlPanel from './components/control-panel.vue';
+import SellingLogs from './components/selling-logs.vue';
 export default {
   name: "App",
   components: {
-    HelloWorld,
+    ControlPanel,
+    SellingLogs
   },
+  setup() {
+    //const timeout = ref()
+
+    onMounted(() => {
+
+    })
+
+    return {}
+  }
 };
 </script>
 
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+*,*::before,*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Fredoka', sans-serif;
+}
+
+.vodka {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+header {
+  width: 100%;
+  height: 50px;
+  background-color: #67c6f2;
+  position: relative;
+}
+
+.blue {
+  color: #11345c;
+}
+
+.light-blue {
+  color: #005baa;
+}
+
+.logo {
+  position: absolute;
+  top: 5px;
+  left: 25px;
+}
+
+span {
+  font-size: 2em;
+  font-weight: 600;
 }
 </style>
