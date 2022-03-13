@@ -1,10 +1,25 @@
 <template>
-<div class="panel">
+<div class="panel shadow">
     <p>Синяя панель</p>
     <div class="panel-controls">
-        <button @click="onSpeedIncrease">Ускорить продажи</button>
-        <button @click="onSpeedDecrease">Замедлить продажи</button>
-        <button>Перезагрузить</button>
+        <button
+            class="shadow"
+            @click="onSpeedIncrease"
+        >
+            Ускорить продажи
+        </button>
+        <button
+            class="shadow"
+            @click="onSpeedDecrease"
+        >
+            Замедлить продажи
+        </button>
+        <button
+            class="shadow"
+            @click="onSellsReset"
+        >
+            Перезагрузить
+        </button>
     </div>
 
     <div class="panel-info">
@@ -37,10 +52,15 @@ export default {
             }
         }
 
+        const onSellsReset = () => {
+
+        }
+
         return {
             getSellingSpeed,
             onSpeedDecrease,
-            onSpeedIncrease
+            onSpeedIncrease,
+            onSellsReset
         }
     },
 }
@@ -83,6 +103,11 @@ export default {
             margin-top: 25px;
             width: 80%;
             border: none;
+            transition: .3s ease;
+
+            &:hover {
+                background-color: lighten(#005baa, 10%);
+            }
         }
     }
 }

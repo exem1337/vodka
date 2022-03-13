@@ -1,6 +1,6 @@
 <template>
 <div class="vodka">
-  <header>
+  <header class="shadow">
     <div class="logo">
       <span class="blue">Синее/</span>
       <span class="light-blue">Синее</span>
@@ -9,7 +9,7 @@
 
   <control-panel />
 
-  <selling-logs />
+  <selling-logs :logInfo="logInfo"/>
 </div>
 </template>
 
@@ -25,13 +25,24 @@ export default {
     SellingLogs
   },
   setup() {
-    //const timeout = ref()
+    const logInfo = ref(['awdawd'])
+
+    const initSells = () => {
+
+    }
+
+    const log = (value) => {
+      logInfo.value.push(value)
+    }
 
     onMounted(() => {
-
+      initSells();
+      log('awwewewewe')
     })
 
-    return {}
+    return {
+      logInfo
+    }
   }
 };
 </script>
@@ -42,6 +53,12 @@ export default {
   padding: 0;
   box-sizing: border-box;
   font-family: 'Fredoka', sans-serif;
+}
+
+.shadow {
+  -webkit-box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+  -moz-box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+  box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
 }
 
 .vodka {
