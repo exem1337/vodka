@@ -7,7 +7,7 @@
       </div>
     </header>
 
-    <control-panel @onReset="onReset" />
+    <control-panel @onReset="onReset" :actualMoneyGained="actualMoneyGained" />
 
     <selling-logs :logInfo="logInfo" />
 
@@ -33,6 +33,11 @@ export default {
   setup() {
     const store = useStore();
     const logInfo = ref([]);
+    const amount = ref(0);
+    const moneyGained = ref(0);
+    const actualMoneyGained = ref(0);
+
+    const price = 150;
 
     const generateAmount = (min, max) => {
       return Math.floor(Math.random() * (max - min + 1) + min);
@@ -42,15 +47,39 @@ export default {
       store.commit("reset");
 
       store.state.interval = setInterval(() => {
-        sellBottles();
+        if (!store.state.deficit) {
+          sellBottles();
+        }
+        else {
+          amount.value = generateAmount(1, 4);
+          store.commit("procedureSell", amount.value);
+          actualMoneyGained.value =
+            actualMoneyGained.value - amount.value * store.state.deficitFee;
+        }
 
-        if (store.state.vodkaCount < 50 && !store.state.vodkaIsComing) {
+        if (store.state.vodkaCount > 100) {
+          actualMoneyGained.value += moneyGained.value;
+          console.log(actualMoneyGained.value)
+        }
+
+        if (store.state.vodkaCount <= 100 && !store.state.vodkaIsComing) {
           store.state.vodkaIsComing = true;
           setTimeout(() => {
             store.commit("orderVodka");
-          }, 18000);
+          }, 18000000 / store.state.sellingSpeed);
         }
-      }, 5000 * store.state.sellingSpeed);
+
+        if (store.state.vodkaCount <= 100 && store.state.vodkaCount > 0) {
+          actualMoneyGained.value =
+            actualMoneyGained.value + moneyGained.value -
+            store.state.vodkaCount * store.state.proficitFee;
+          store.commit("setProficit");
+        }
+
+        if (store.state.vodkaCount < 0) {
+          store.commit("setDificit");
+        }
+      }, 600000 / store.state.sellingSpeed);
     };
 
     const log = (value) => {
@@ -65,9 +94,10 @@ export default {
     };
 
     const sellBottles = () => {
-      const amount = generateAmount(1, 4);
-      store.commit("procedureSell", amount);
-      log(getTime() + " | Продано бутылок: " + amount);
+      amount.value = generateAmount(1, 4);
+      moneyGained.value = amount.value * price;
+      store.commit("procedureSell", amount.value);
+      log(getTime() + " | Продано бутылок: " + amount.value);
     };
 
     onMounted(() => {
@@ -76,12 +106,14 @@ export default {
 
     const onReset = () => {
       logInfo.value = [];
+      initSells();
     };
 
     return {
       logInfo,
       onReset,
       store,
+      actualMoneyGained,
     };
   },
 };

@@ -2,62 +2,47 @@
   <div class="panel shadow">
     <p>Синяя панель</p>
     <div class="panel-controls">
-      <button class="shadow" @click="onSpeedIncrease">Ускорить продажи</button>
-      <button class="shadow" @click="onSpeedDecrease">Замедлить продажи</button>
+      <input type="range" min="1" max="300" v-model="selSpeed">
       <button class="shadow" @click="onSellsReset">Перезагрузить</button>
     </div>
 
     <div class="panel-info">
       <p class="info-element">
-        Осталось бутылок: {{ $store.state.vodkaCount }}
+        Осталось бутылок: {{ store.state.vodkaCount }}
       </p>
-      <p class="info-element">Скорость продажи: {{ getSellingSpeed }}</p>
+      <p class="info-element">Скорость продажи: {{ store.state.sellingSpeed }}</p>
       <p class="info-element">
-        Статус магазина: {{ $store.state.deficit ? "Дефицит" : "Профицит" }}
+        Статус магазина: {{ store.state.vodkaCount > 100 ? 'Продажи идут' : store.state.deficit ? "Дефицит" : "Профицит" }}
       </p>
+      <p class="info-element">Прибыль: {{ actualMoneyGained }}</p>
     </div>
   </div>
 </template>
 
 <script>
-import { computed } from "vue";
+import { watch, ref } from '@vue/runtime-core';
 import { useStore } from "vuex";
 export default {
+  props: ['actualMoneyGained'],
   setup(props, { emit }) {
     const store = useStore();
+    const selSpeed = ref(1);
 
-    const getSellingSpeed = computed(() => {
-      return store.state.sellingSpeed == 1.5
-        ? "Низкая"
-        : store.state.sellingSpeed == 1
-        ? "Средняя"
-        : "Высокая";
-    });
-
-    const onSpeedIncrease = () => {
-      if (store.state.sellingSpeed != 0.5) {
-        store.state.sellingSpeed -= 0.5;
-      }
-      store.commit("reset");
-    };
-
-    const onSpeedDecrease = () => {
-      if (store.state.sellingSpeed != 1.5) {
-        store.state.sellingSpeed += 0.5;
-      }
-      store.commit("reset");
-    };
+    watch(selSpeed, (currentValue) => {
+      store.state.sellingSpeed = currentValue;
+      onSellsReset();
+    })
 
     const onSellsReset = () => {
+      store.state.sellingSpeed = selSpeed.value;
       store.commit("reset");
       emit("onReset");
     };
 
     return {
-      getSellingSpeed,
-      onSpeedDecrease,
-      onSpeedIncrease,
       onSellsReset,
+      store,
+      selSpeed,
     };
   },
 };
@@ -79,6 +64,10 @@ export default {
     .info-element {
       margin-top: 15px;
     }
+  }
+
+  input {
+    margin-top: 25px;
   }
 
   p {
