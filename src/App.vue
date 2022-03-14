@@ -1,58 +1,119 @@
 <template>
-<div class="vodka">
-  <header class="shadow">
-    <div class="logo">
-      <span class="blue">Синее/</span>
-      <span class="light-blue">Синее</span>
+  <div class="vodka">
+    <header class="shadow">
+      <div class="logo">
+        <span class="blue">Синее/</span>
+        <span class="light-blue">Синее</span>
+      </div>
+    </header>
+
+    <control-panel @onReset="onReset" />
+
+    <selling-logs :logInfo="logInfo" />
+
+    <div class="vodka-van" :class="store.state.vodkaIsComing ? 'green' : 'red'">
+      <i class="material-icons">local_shipping</i>
+      <p>{{ store.state.vodkaIsComing ? "Водка едет" : "Водка не едет" }}</p>
     </div>
-  </header>
-
-  <control-panel />
-
-  <selling-logs :logInfo="logInfo"/>
-</div>
+  </div>
 </template>
 
 <script>
-import { onMounted, ref } from '@vue/runtime-core';
+import { onMounted, ref } from "@vue/runtime-core";
 
-import ControlPanel from './components/control-panel.vue';
-import SellingLogs from './components/selling-logs.vue';
+import ControlPanel from "./components/control-panel.vue";
+import SellingLogs from "./components/selling-logs.vue";
+import { useStore } from "vuex";
 export default {
   name: "App",
   components: {
     ControlPanel,
-    SellingLogs
+    SellingLogs,
   },
   setup() {
-    const logInfo = ref(['awdawd'])
+    const store = useStore();
+    const logInfo = ref([]);
+
+    const generateAmount = (min, max) => {
+      return Math.floor(Math.random() * (max - min + 1) + min);
+    };
 
     const initSells = () => {
+      store.commit("reset");
 
-    }
+      store.state.interval = setInterval(() => {
+        sellBottles();
+
+        if (store.state.vodkaCount < 50 && !store.state.vodkaIsComing) {
+          store.state.vodkaIsComing = true;
+          setTimeout(() => {
+            store.commit("orderVodka");
+          }, 18000);
+        }
+      }, 5000 * store.state.sellingSpeed);
+    };
 
     const log = (value) => {
-      logInfo.value.push(value)
-    }
+      logInfo.value.push(value);
+    };
+
+    const getTime = () => {
+      const today = new Date();
+      return (
+        today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds()
+      );
+    };
+
+    const sellBottles = () => {
+      const amount = generateAmount(1, 4);
+      store.commit("procedureSell", amount);
+      log(getTime() + " | Продано бутылок: " + amount);
+    };
 
     onMounted(() => {
       initSells();
-      log('awwewewewe')
-    })
+    });
+
+    const onReset = () => {
+      logInfo.value = [];
+    };
 
     return {
-      logInfo
-    }
-  }
+      logInfo,
+      onReset,
+      store,
+    };
+  },
 };
 </script>
 
 <style lang="scss">
-*,*::before,*::after {
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Fredoka', sans-serif;
+  font-family: "Fredoka", sans-serif;
+}
+
+.red {
+  color: red;
+}
+
+.green {
+  color: green;
+}
+
+.vodka-van {
+  display: flex;
+  width: 150px;
+  justify-content: space-around;
+  align-items: center;
+
+  position: absolute;
+  top: 580px;
+  left: 100px;
 }
 
 .shadow {
