@@ -22,8 +22,7 @@ export default createStore({
       this.interval = null;
     },
     orderVodka() {
-      if(this.state.vodkaCount >=0)
-        this.state.vodkaCount += 1000;
+      if (this.state.vodkaCount >= 0) this.state.vodkaCount += 1000;
       else this.state.vodkaCount = 1000;
       this.state.vodkaIsComing = false;
     },

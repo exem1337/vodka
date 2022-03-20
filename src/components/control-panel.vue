@@ -2,17 +2,25 @@
   <div class="panel shadow">
     <p>Синяя панель</p>
     <div class="panel-controls">
-      <input type="range" min="1" max="300" v-model="selSpeed">
+      <input type="range" min="1" max="300" v-model="selSpeed" />
       <button class="shadow" @click="onSellsReset">Перезагрузить</button>
     </div>
 
     <div class="panel-info">
+      <p class="info-element">Осталось бутылок: {{ store.state.vodkaCount }}</p>
       <p class="info-element">
-        Осталось бутылок: {{ store.state.vodkaCount }}
+        Скорость продажи:
+        {{ store.state.sellingSpeed }}
       </p>
-      <p class="info-element">Скорость продажи: {{ store.state.sellingSpeed }}</p>
       <p class="info-element">
-        Статус магазина: {{ store.state.vodkaCount > 100 ? 'Продажи идут' : store.state.deficit ? "Дефицит" : "Профицит" }}
+        Статус магазина:
+        {{
+          store.state.vodkaCount > 100
+            ? "Продажи идут"
+            : store.state.deficit
+            ? "Дефицит"
+            : "Профицит"
+        }}
       </p>
       <p class="info-element">Прибыль: {{ actualMoneyGained }}</p>
     </div>
@@ -20,10 +28,10 @@
 </template>
 
 <script>
-import { watch, ref } from '@vue/runtime-core';
+import { watch, ref } from "@vue/runtime-core";
 import { useStore } from "vuex";
 export default {
-  props: ['actualMoneyGained'],
+  props: ["actualMoneyGained"],
   setup(props, { emit }) {
     const store = useStore();
     const selSpeed = ref(1);
@@ -31,7 +39,7 @@ export default {
     watch(selSpeed, (currentValue) => {
       store.state.sellingSpeed = currentValue;
       onSellsReset();
-    })
+    });
 
     const onSellsReset = () => {
       store.state.sellingSpeed = selSpeed.value;
@@ -75,6 +83,7 @@ export default {
     text-align: center;
     cursor: default;
   }
+
   .panel-controls {
     display: flex;
     flex-direction: column;

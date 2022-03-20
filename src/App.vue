@@ -49,8 +49,7 @@ export default {
       store.state.interval = setInterval(() => {
         if (!store.state.deficit) {
           sellBottles();
-        }
-        else {
+        } else {
           amount.value = generateAmount(1, 4);
           store.commit("procedureSell", amount.value);
           actualMoneyGained.value =
@@ -59,7 +58,7 @@ export default {
 
         if (store.state.vodkaCount > 100) {
           actualMoneyGained.value += moneyGained.value;
-          console.log(actualMoneyGained.value)
+          console.log(actualMoneyGained.value);
         }
 
         if (store.state.vodkaCount <= 100 && !store.state.vodkaIsComing) {
@@ -71,7 +70,8 @@ export default {
 
         if (store.state.vodkaCount <= 100 && store.state.vodkaCount > 0) {
           actualMoneyGained.value =
-            actualMoneyGained.value + moneyGained.value -
+            actualMoneyGained.value +
+            moneyGained.value -
             store.state.vodkaCount * store.state.proficitFee;
           store.commit("setProficit");
         }
