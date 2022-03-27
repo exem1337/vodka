@@ -1,8 +1,10 @@
 <template>
   <div class="panel shadow">
-    <p>Синяя панель</p>
     <div class="panel-controls">
-      <input type="range" min="1" max="300" v-model="selSpeed" />
+      <div class="radio-wrapper">
+        <input type="checkbox" v-model="isFastSells" id="speed">
+        <label for="#speed">Скорость</label>
+      </div>
       <button class="shadow" @click="onSellsReset">Перезагрузить</button>
     </div>
 
@@ -10,7 +12,7 @@
       <p class="info-element">Осталось бутылок: {{ store.state.vodkaCount }}</p>
       <p class="info-element">
         Скорость продажи:
-        {{ store.state.sellingSpeed }}
+        {{ isFastSells ? "Быстро" : "Медленно" }}
       </p>
       <p class="info-element">
         Статус магазина:
@@ -34,15 +36,14 @@ export default {
   props: ["actualMoneyGained"],
   setup(props, { emit }) {
     const store = useStore();
-    const selSpeed = ref(1);
+    const isFastSells = ref(false);
 
-    watch(selSpeed, (currentValue) => {
-      store.state.sellingSpeed = currentValue;
+    watch(isFastSells, (currentValue) => {
+      currentValue ? store.state.sellingSpeed = 300 : store.state.sellingSpeed = 1;
       onSellsReset();
     });
 
     const onSellsReset = () => {
-      store.state.sellingSpeed = selSpeed.value;
       store.commit("reset");
       emit("onReset");
     };
@@ -50,7 +51,7 @@ export default {
     return {
       onSellsReset,
       store,
-      selSpeed,
+      isFastSells,
     };
   },
 };
@@ -58,20 +59,34 @@ export default {
 
 <style lang="scss" scoped>
 .panel {
-  width: 300px;
-  height: 450px;
-  background-color: lighten(#67c6f2, 20%);
+  width: 1300px;
+  height: 150px;
+  background-color: lighten(green, 80%);
   border-radius: 15px;
-
+  display: flex;
   margin: 50px;
   padding: 15px;
-
+  align-items: center;
+  justify-content: space-between;
   .panel-info {
     margin-top: 15px;
+    display: flex;
 
     .info-element {
       margin-top: 15px;
+      margin-left: 15px;
+      border-left: 1px solid black;
+      height: fit-content;
+      padding-left: 15px;
+
+      &:first-child {
+        border: none;
+      }
     }
+  }
+
+  button {
+    margin-left: 15px;
   }
 
   input {
@@ -86,12 +101,12 @@ export default {
 
   .panel-controls {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     justify-content: space-around;
 
     button {
-      background-color: #005baa;
+      background-color: green;
       color: white;
       font-size: 1.25em;
       padding: 15px;
@@ -101,7 +116,7 @@ export default {
       transition: 0.3s ease;
 
       &:hover {
-        background-color: lighten(#005baa, 10%);
+        background-color: lighten(green, 10%);
       }
     }
   }

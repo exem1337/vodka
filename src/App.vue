@@ -1,19 +1,18 @@
 <template>
   <div class="vodka">
-    <header class="shadow">
+    <!-- <header class="shadow">
       <div class="logo">
         <span class="blue">Синее/</span>
         <span class="light-blue">Синее</span>
       </div>
-    </header>
+    </header> -->
 
     <control-panel @onReset="onReset" :actualMoneyGained="actualMoneyGained" />
 
-    <selling-logs :logInfo="logInfo" />
+    <!-- <selling-logs :logInfo="logInfo" /> -->
 
-    <div class="vodka-van" :class="store.state.vodkaIsComing ? 'green' : 'red'">
-      <i class="material-icons">local_shipping</i>
-      <p>{{ store.state.vodkaIsComing ? "Водка едет" : "Водка не едет" }}</p>
+    <div class="vodka-van">
+      <p>{{ store.state.vodkaIsComing ? "Идет поставка" : "" }}</p>
     </div>
   </div>
 </template>
@@ -22,13 +21,13 @@
 import { onMounted, ref } from "@vue/runtime-core";
 
 import ControlPanel from "./components/control-panel.vue";
-import SellingLogs from "./components/selling-logs.vue";
+// import SellingLogs from "./components/selling-logs.vue";
 import { useStore } from "vuex";
 export default {
   name: "App",
   components: {
     ControlPanel,
-    SellingLogs,
+    // SellingLogs,
   },
   setup() {
     const store = useStore();
@@ -144,7 +143,7 @@ export default {
   align-items: center;
 
   position: absolute;
-  top: 580px;
+  top: 180px;
   left: 100px;
 }
 
